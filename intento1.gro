@@ -33,7 +33,7 @@ genes([		name := "OperonY",
 
 genes([		name := "OperonW0",
 			proteins := {"W0"}, 
-			promoter := [function := "AND",
+			promoter := [function := "OR",
 			transcription_factors := {"X", "Y"},
 			noise := [toOff := 0.001, toOn := 0.001, noise_time:= 100.0]],
 			prot_act_times := [times := {15.0}, variabilities := {2.0}],
