@@ -7,14 +7,13 @@ set ("population_max", 2000000);
 set ("signals",1.0);
 set ("signals_draw", 0.0);
 grid("continuous", "gro_original", 10, 10, 8);
-//arabinose := s_signal([kdiff := 0.8, kdeg := 0.005]);
 
 genes([		name := "OperonGfp",
 			proteins := {"gfp"}, 
 			promoter := [function := "OR",
 			transcription_factors := {"W0", "W1"},
 			noise := [toOff := 0.001, toOn := 0.001, noise_time:= 100.0]],
-			prot_act_times := [times := {15.0}, variabilities := {2.0}],
+			prot_act_times := [times := {10.0}, variabilities := {2.0}],
 			prot_deg_times := [times := {1.0}, variabilities := {0.0}]]);
 
 genes([		name := "OperonX",
@@ -54,7 +53,6 @@ plasmids_genes ([ pOr := {"OperonGfp", "OperonW0", "OperonW1", "OperonX", "Opero
 //Actions
 action({"gfp"},"d_paint",{"1","0","0","0"});
 action({"-gfp"},"d_paint",{"-1","0","0","0"});
-//action({},"s_get_QS",{tostring(arabinose),">","0.5","arac"});
 action({},"set_growth_rate",{"0.017"});
 
 //Programs
@@ -65,10 +63,5 @@ program p() :=
 
 program main() :=
 {
-    //true:
-	//{
-    //    s_set_signal(arabinose, 20, 0.0, 0.0);
-    //}
-	
     c_ecolis(100, 0, 0, 80, {"pOr"}, program p()); 
 };
