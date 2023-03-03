@@ -48,7 +48,7 @@ genes([		name := "OperonW1",
 			prot_deg_times := [times := {1.0}, variabilities := {0.0}]]);
 
 
-plasmids_genes ([ pYES := {"OperonGfp", "OperonW0", "OperonW1", "OperonX", "OperonY"}]);
+plasmids_genes ([ pOr := {"OperonGfp", "OperonW0", "OperonW1", "OperonX", "OperonY"}]);
 
 
 //Actions
@@ -70,5 +70,5 @@ program main() :=
     //    s_set_signal(arabinose, 20, 0.0, 0.0);
     //}
 	
-    c_ecolis(100, 0, 0, 80, {"pYES"}, program p()); 
+    c_ecolis(100, 0, 0, 80, {"pOr"}, program p()); 
 };
