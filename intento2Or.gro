@@ -63,8 +63,8 @@ action({"Y"},"set_growth_rate",{"0.017"});
 action({"X"},"s_emit_signal",{tostring(s1),"2", "exact"});
 action({"Y"},"s_emit_signal",{tostring(s2),"2", "exact"});
 action({"-gfp"},"d_paint",{"-1","0","0","0"});
-action({"X"},"s_get_QS",{tostring(s1),">","0.1","W0"});
-action({"Y"},"s_get_QS",{tostring(s2),">","0.1","W1"});
+action({},"s_get_QS",{tostring(s1),">","0.0001","W0"});
+action({},"s_get_QS",{tostring(s2),">","0.0001","W1"});
 action({"gfp"},"d_paint",{"1","0","0","0"});
 
 //Programs
