@@ -34,24 +34,6 @@ genes([		name := "OperonY",
 			prot_act_times := [times := {15.0}, variabilities := {2.0}],
 			prot_deg_times := [times := {1.0}, variabilities := {0.0}]]);
 
-/*genes([	name := "OperonW0",
-			proteins := {"W0"}, 
-			promoter := [function := "YES",
-			transcription_factors := {"X"},
-			noise := [toOff := 0.001, toOn := 0.001, noise_time:= 100.0]],
-			prot_act_times := [times := {15.0}, variabilities := {2.0}],
-			prot_deg_times := [times := {1.0}, variabilities := {0.0}]]);
-
-genes([		name := "OperonW1",
-			proteins := {"W1"}, 
-			promoter := [function := "YES",
-			transcription_factors := {"Y"},
-			noise := [toOff := 0.001, toOn := 0.001, noise_time:= 100.0]],
-			prot_act_times := [times := {15.0}, variabilities := {2.0}],
-			prot_deg_times := [times := {1.0}, variabilities := {0.0}]]);*/
-
-//plasmids_genes ([ pOr := {"OperonGfp", "OperonW0", "OperonW1", "OperonX", "OperonY"}]);
-
 plasmids_genes ([
     p1 := {"OperonGfp","OperonX"},
     p2 := {"OperonGfp","OperonY"}
