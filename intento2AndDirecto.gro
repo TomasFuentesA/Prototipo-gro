@@ -12,6 +12,7 @@ set ("signals_draw", 1.0);
 
 //Kdiff, Kdeg, emit, absorb
 grid("continuous", "gro_original", 10, 10, 8);
+ip := s_signal([kdiff := 0.8, kdeg := 0.0001]);
 s1 := s_signal([kdiff := 0.02, kdeg := 0.1]);
 s2 := s_signal([kdiff := 0.02, kdeg := 0.05]);
 rep := s_signal([kdiff := 0.02, kdeg := 0.5]);	
@@ -19,28 +20,52 @@ rep := s_signal([kdiff := 0.02, kdeg := 0.5]);
 route1 := "/Users/swamp/Desktop/Gro/Documents/";
 fp := fopen (route1 <> "AndPerceptronDirecto.csv", "w" );
 
-genes([		name := "OperonGfp",
-			proteins := {"rep","gfp"}, 
-			promoter := [function := "AND",
-			transcription_factors := {"W0", "W1"},
+genes([		name := "OperonInit",
+			proteins := {"LacI"}, 
+			promoter := [function := "NOT",
+			transcription_factors := {"iptg"},
 			noise := [toOff := 0.01, toOn := 0.0, noise_time:= 100.0]],
-			prot_act_times := [times := {5.5, 10.0}, variabilities := {1.0, 2.0}],
-			prot_deg_times := [times := {1.0, 1.0}, variabilities := {0.0, 0.0}]]);
+			prot_act_times := [times := {10.0}, variabilities := {2.0}],
+			prot_deg_times := [times := {1.0}, variabilities := {0.0}]]);
+
+genes([		name := "OperonAuX",
+			proteins := {"TetR"}, 
+			promoter := [function := "YES",
+			transcription_factors := {"LacI"},
+			noise := [toOff := 0.01, toOn := 0.0, noise_time:= 100.0]],
+			prot_act_times := [times := {10.0}, variabilities := {2.0}],
+			prot_deg_times := [times := {1.0}, variabilities := {0.0}]]);	
+
+genes([		name := "OperonAuY",
+			proteins := {"TetR"}, 
+			promoter := [function := "YES",
+			transcription_factors := {"LacI"},
+			noise := [toOff := 0.01, toOn := 0.0, noise_time:= 100.0]],
+			prot_act_times := [times := {10.0}, variabilities := {2.0}],
+			prot_deg_times := [times := {1.0}, variabilities := {0.0}]]);				
+
+genes([		name := "OperonX2",
+			proteins := {"X"}, 
+			promoter := [function := "NOT",
+			transcription_factors := {"TetR"},
+			noise := [toOff := 0.001, toOn := 0.001, noise_time:= 100.0]],
+			prot_act_times := [times := {10.0}, variabilities := {2.0}],
+			prot_deg_times := [times := {1.0}, variabilities := {0.0}]]);
+
+genes([		name := "OperonY2",
+			proteins := {"Y"},
+			promoter := [function := "NOT",
+			transcription_factors := {"TetR"},
+			noise := [toOff := 0.001, toOn := 0.001, noise_time:= 100.0]],
+			prot_act_times := [times := {10.0}, variabilities := {2.0}],
+			prot_deg_times := [times := {1.0}, variabilities := {0.0}]]);
 
 genes([		name := "OperonX",
 			proteins := {"X"}, 
 			promoter := [function := "YES",
 			transcription_factors := {"rep"},
 			noise := [toOff := 0.001, toOn := 0.001, noise_time:= 100.0]],
-			prot_act_times := [times := {15.0}, variabilities := {2.0}],
-			prot_deg_times := [times := {1.0}, variabilities := {0.0}]]);
-
-genes([		name := "OperonDieX",
-			proteins := {"X"}, 
-			promoter := [function := "NOT",
-			transcription_factors := {"X"},
-			noise := [toOff := 0.001, toOn := 0.001, noise_time:= 100.0]],
-			prot_act_times := [times := {15.0}, variabilities := {2.0}],
+			prot_act_times := [times := {10.0}, variabilities := {2.0}],
 			prot_deg_times := [times := {1.0}, variabilities := {0.0}]]);
 
 genes([		name := "OperonY",
@@ -48,20 +73,22 @@ genes([		name := "OperonY",
 			promoter := [function := "YES",
 			transcription_factors := {"rep"},
 			noise := [toOff := 0.001, toOn := 0.001, noise_time:= 100.0]],
-			prot_act_times := [times := {15.0}, variabilities := {2.0}],
+			prot_act_times := [times := {10.0}, variabilities := {2.0}],
 			prot_deg_times := [times := {1.0}, variabilities := {0.0}]]);
 
-genes([		name := "OperonDieY",
-			proteins := {"Y"},
-			promoter := [function := "NOT",
-			transcription_factors := {"Y"},
-			noise := [toOff := 0.001, toOn := 0.001, noise_time:= 100.0]],
-			prot_act_times := [times := {15.0}, variabilities := {2.0}],
-			prot_deg_times := [times := {1.0}, variabilities := {0.0}]]);			
+genes([		name := "OperonGfp",
+			proteins := {"rep","gfp"}, 
+			promoter := [function := "AND",
+			transcription_factors := {"W0", "W1"},
+			noise := [toOff := 0.01, toOn := 0.0, noise_time:= 100.0]],
+			prot_act_times := [times := {5.5, 10.0}, variabilities := {1.0, 2.0}],
+			prot_deg_times := [times := {1.0, 1.0}, variabilities := {0.0, 0.0}]]);			
+
+		
 
 plasmids_genes ([
-    p1 := {"OperonGfp","OperonX", "OperonDieX"},
-    p2 := {"OperonGfp","OperonY", "OperonDieY"}
+    p1 := {"OperonGfp","OperonX","OperonX2","OperonAuX","OperonInit"},
+    p2 := {"OperonGfp","OperonY","OperonY2","OperonAuY","OperonInit"}
 ]);
 
 //Actions
@@ -74,6 +101,7 @@ action({"-gfp"},"d_paint",{"-1","0","0","0"});
 action({},"s_get_QS",{tostring(s1),">","0.1","W0"});
 action({},"s_get_QS",{tostring(s2),">","0.1","W1"});
 action({"gfp"},"d_paint",{"1","0","0","0"});
+action({"LacI"},"s_get_QS",{tostring(ip),">","0.7","iptg"});
 
 //Programs
 program p() :=
