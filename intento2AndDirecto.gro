@@ -12,10 +12,10 @@ set ("signals_draw", 1.0);
 
 //Kdiff, Kdeg, emit, absorb
 grid("continuous", "gro_original", 10, 10, 8);
-ip := s_signal([kdiff := 0.8, kdeg := 0.0001]);
+ip := s_signal([kdiff := 0.9, kdeg := 0.2]); 
 s1 := s_signal([kdiff := 0.02, kdeg := 0.1]);
 s2 := s_signal([kdiff := 0.02, kdeg := 0.05]);
-rep := s_signal([kdiff := 0.02, kdeg := 0.5]);	
+rep := s_signal([kdiff := 0.0002, kdeg := 0.0002]);	
 
 route1 := "/Users/swamp/Desktop/Gro/Documents/";
 fp := fopen (route1 <> "AndPerceptronDirecto.csv", "w" );
@@ -30,19 +30,11 @@ genes([		name := "OperonInit",
 
 genes([		name := "OperonAuX",
 			proteins := {"TetR"}, 
-			promoter := [function := "YES",
+			promoter := [function := "NOT",
 			transcription_factors := {"LacI"},
 			noise := [toOff := 0.01, toOn := 0.0, noise_time:= 100.0]],
 			prot_act_times := [times := {10.0}, variabilities := {2.0}],
-			prot_deg_times := [times := {1.0}, variabilities := {0.0}]]);	
-
-genes([		name := "OperonAuY",
-			proteins := {"TetR"}, 
-			promoter := [function := "YES",
-			transcription_factors := {"LacI"},
-			noise := [toOff := 0.01, toOn := 0.0, noise_time:= 100.0]],
-			prot_act_times := [times := {10.0}, variabilities := {2.0}],
-			prot_deg_times := [times := {1.0}, variabilities := {0.0}]]);				
+			prot_deg_times := [times := {1.0}, variabilities := {0.0}]]);			
 
 genes([		name := "OperonX2",
 			proteins := {"X"}, 
@@ -88,7 +80,7 @@ genes([		name := "OperonGfp",
 
 plasmids_genes ([
     p1 := {"OperonGfp","OperonX","OperonX2","OperonAuX","OperonInit"},
-    p2 := {"OperonGfp","OperonY","OperonY2","OperonAuY","OperonInit"}
+    p2 := {"OperonGfp","OperonY","OperonY2","OperonAuX","OperonInit"}
 ]);
 
 //Actions
@@ -96,12 +88,13 @@ action({"X"},"set_growth_rate",{"0.017"});
 action({"Y"},"set_growth_rate",{"0.017"});
 action({"X"},"s_emit_signal",{tostring(s1),"1", "exact"});
 action({"Y"},"s_emit_signal",{tostring(s2),"1", "exact"});
-action({"rep"}, "s_emit_signal",{tostring(rep),"3", "exact"});
+action({"rep"}, "s_emit_signal",{tostring(rep),"0.001", "exact"});
 action({"-gfp"},"d_paint",{"-1","0","0","0"});
-action({},"s_get_QS",{tostring(s1),">","0.1","W0"});
-action({},"s_get_QS",{tostring(s2),">","0.1","W1"});
+action({},"s_get_QS",{tostring(s1),">","1","W0"});
+action({},"s_get_QS",{tostring(s2),">","1","W1"});
 action({"gfp"},"d_paint",{"1","0","0","0"});
-action({"LacI"},"s_get_QS",{tostring(ip),">","0.7","iptg"});
+action({},"s_get_QS",{tostring(ip),">","1","iptg"});
+//action({},"s_get_QS",{tostring(rep),">","0.001","rep"});
 
 //Programs
 program p() :=
@@ -113,12 +106,15 @@ program main() :=
 {
 	t = 0:
 	{
+		
 		fprint(fp,"Time, W0, W1, Rep\n");
+		
 	}
 	true:
 	{
 		dump_multiple(fp,{"W0"},{"W1"}, {"rep"});
 		t := t + dt;
+		s_set_signal(ip, 10000, 0.0, 0.0);
 	}
     c_ecolis(100, 0, 0, 80, {"p1"}, program p());
     c_ecolis(100, 0, 0, 80, {"p2"}, program p()); 

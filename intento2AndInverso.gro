@@ -17,7 +17,7 @@ s2 := s_signal([kdiff := 0.02, kdeg := 0.05]);
 rep := s_signal([kdiff := 0.02, kdeg := 0.5]);	
 
 route1 := "/Users/swamp/Desktop/Gro/Documents/";
-fp := fopen (route1 <> "AndPerceptron.csv", "w" );
+fp := fopen (route1 <> "AndPerceptronInverso.csv", "w" );
 
 genes([		name := "OperonGfp",
 			proteins := {"rep","gfp"}, 
