@@ -17,8 +17,8 @@ s1 := s_signal([kdiff := 0.02, kdeg := 0.1]);
 s2 := s_signal([kdiff := 0.02, kdeg := 0.05]);
 rep := s_signal([kdiff := 0.0002, kdeg := 0.0002]);	
 
-route1 := "/Users/swamp/Desktop/Gro/Documents/";
-fp := fopen (route1 <> "AndPerceptronDirecto.csv", "w" );
+route1 := "/Users/swamp/OneDrive/Escritorio/Prototipo-gro/Documents/";
+fp := fopen (route1 <> "AND_circuit3_D.csv", "w" );
 
 genes([		name := "OperonInit",
 			proteins := {"LacI"}, 
@@ -107,14 +107,14 @@ program main() :=
 	t = 0:
 	{
 		
-		fprint(fp,"Time, W0, W1, Rep\n");
+		fprint(fp,"Time, X, Y, W0, W1, Rep\n");
 		
 	}
 	true:
 	{
-		dump_multiple(fp,{"W0"},{"W1"}, {"rep"});
+		dump_multiple(fp,{"X"},{"Y"},{"W0"},{"W1"},{"rep"});
 		t := t + dt;
-		s_set_signal(ip, 10000, 0.0, 0.0);
+		s_set_signal(ip, 100, 0.0, 0.0);
 	}
     c_ecolis(100, 0, 0, 80, {"p1"}, program p());
     c_ecolis(100, 0, 0, 80, {"p2"}, program p()); 

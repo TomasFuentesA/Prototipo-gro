@@ -16,8 +16,8 @@ s1 := s_signal([kdiff := 0.02, kdeg := 0.1]);
 s2 := s_signal([kdiff := 0.02, kdeg := 0.05]);
 rep := s_signal([kdiff := 0.02, kdeg := 0.5]);	
 
-route1 := "/Users/swamp/Desktop/Gro/Documents/";
-fp := fopen (route1 <> "AndPerceptronInverso.csv", "w" );
+route1 := "/Users/swamp/OneDrive/Escritorio/Prototipo-gro/Documents/";
+fp := fopen (route1 <> "AND_circuit3_I.csv", "w" );
 
 genes([		name := "OperonGfp",
 			proteins := {"rep","gfp"}, 
@@ -69,11 +69,13 @@ program main() :=
 {
 	t = 0:
 	{
-		fprint(fp,"Time, W0, W1, Rep\n");
+		
+		fprint(fp,"Time, X, Y, W0, W1, Rep\n");
+		
 	}
 	true:
 	{
-		dump_multiple(fp,{"W0"},{"W1"}, {"rep"});
+		dump_multiple(fp,{"X"},{"Y"},{"W0"},{"W1"},{"rep"});
 		t := t + dt;
 	}
     c_ecolis(100, 0, 0, 80, {"p1"}, program p());
