@@ -3,22 +3,50 @@ include gro
 set ("dt", 0.1);
 set ("population_max", 2000000);
 
+//Control
+t := 0;
+
 //CellSignals settings
 set ("signals",1.0);
 set ("signals_draw", 1.0);
 
 //Kdiff, Kdeg, emit, absorb
 grid("continuous", "gro_original", 10, 10, 8);
-s1 := s_signal([kdiff := 0.02, kdeg := 0.1]);
-s2 := s_signal([kdiff := 0.02, kdeg := 0.005]);
+x_s := s_signal([kdiff := 0.9, kdeg := 0.2]);
+y_s := s_signal([kdiff := 0.9, kdeg := 0.2]); 
+s1 := s_signal([kdiff := 0.02, kdeg := 0.1]); //W0
+s2 := s_signal([kdiff := 0.02, kdeg := 0.1]); //W1
+s3 := s_signal([kdiff := 0.02, kdeg := 0.1]); //W2
+s4 := s_signal([kdiff := 0.02, kdeg := 0.1]); //W3
+s5 := s_signal([kdiff := 0.02, kdeg := 0.1]); //W4
+s6 := s_signal([kdiff := 0.02, kdeg := 0.1]); //W5
 
-genes([		name := "OperonGfp",
-			proteins := {"gfp"}, 
+route1 := "/Users/swamp/OneDrive/Escritorio/Prototipo-gro/Documents/";
+fp := fopen (route1 <> "XOR_circuit.csv", "w" );
+
+genes([		name := "OperonAND1",
+			proteins := {"AO1"}, 
 			promoter := [function := "AND",
-			transcription_factors := {"NX", "NY"},
+			transcription_factors := {"W0", "W1"},
 			noise := [toOff := 0.01, toOn := 0.0, noise_time:= 100.0]],
 			prot_act_times := [times := {10.0}, variabilities := {2.0}],
 			prot_deg_times := [times := {1.0}, variabilities := {0.0}]]);
+
+genes([		name := "OperonAND2",
+			proteins := {"AO2"}, 
+			promoter := [function := "AND",
+			transcription_factors := {"W2", "W3"},
+			noise := [toOff := 0.01, toOn := 0.0, noise_time:= 100.0]],
+			prot_act_times := [times := {10.0}, variabilities := {2.0}],
+			prot_deg_times := [times := {1.0}, variabilities := {0.0}]]);
+
+genes([		name := "OperonOR",
+			proteins := {"gfp"},
+			promoter := [function := "OR",
+			transcription_factors := {"W4", "W5"},
+			noise := [toOff := 0.01, toOn := 0.0, noise_time:= 100.0]],
+			prot_act_times := [times := {10.0}, variabilities := {2.0}],
+			prot_deg_times := [times := {1.0}, variabilities := {0.0}]]);						
 
 genes([		name := "OperonX",
 			proteins := {"X"}, 
@@ -29,14 +57,14 @@ genes([		name := "OperonX",
 
 genes([		name := "OperonY",
 			proteins := {"Y"}, 
-			promoter := [function := "TRUE",
+			promoter := [function := "FALSE",
 			noise := [toOff := 0.001, toOn := 0.001, noise_time:= 100.0]],
 			prot_act_times := [times := {15.0}, variabilities := {2.0}],
 			prot_deg_times := [times := {1.0}, variabilities := {0.0}]]);
 
 genes([		name := "OperonNX",
 			proteins := {"NX"},
-			promoter := [function := "YES",
+			promoter := [function := "NOT",
 			transcription_factors := {"X"},
 			noise := [toOff := 0.001, toOn := 0.001, noise_time:= 100.0]],
 			prot_act_times := [times := {15.0}, variabilities := {2.0}],
@@ -44,35 +72,72 @@ genes([		name := "OperonNX",
 
 genes([		name := "OperonNY",
 			proteins := {"NY"}, 
-			promoter := [function := "YES",
+			promoter := [function := "NOT",
 			transcription_factors := {"Y"},
 			noise := [toOff := 0.001, toOn := 0.001, noise_time:= 100.0]],
 			prot_act_times := [times := {15.0}, variabilities := {2.0}],
 			prot_deg_times := [times := {1.0}, variabilities := {0.0}]]);
 
 plasmids_genes ([
-    p1 := {"OperonGfp","OperonX","OperonNX"},
-    p2 := {"OperonGfp","OperonY","OperonNY"}
+    p1 := {"OperonAND1","OperonOR","OperonX","OperonNX"},
+    p2 := {"OperonAND2","OperonOR","OperonY","OperonNY"}
 ]);
 
 //Actions
 action({"X"},"set_growth_rate",{"0.017"});
 action({"Y"},"set_growth_rate",{"0.017"});
-//action({"X"},"s_emit_signal",{tostring(s1),"2", "exact"});
-//action({"Y"},"s_emit_signal",{tostring(s2),"0.0001", "exact"});
+
+//Primera compuerta
+action({"X"},"s_emit_signal",{tostring(s1),"1", "exact"});
+action({"NY"},"s_emit_signal",{tostring(s2),"1", "exact"});
+
+//Segunda compuerta
+action({"Y"},"s_emit_signal",{tostring(s3),"1", "exact"});
+action({"NX"},"s_emit_signal",{tostring(s4),"1", "exact"});
+
+//Tercera compuerta
+action({"AO1"},"s_emit_signal",{tostring(s5),"1", "exact"});
+action({"AO2"},"s_emit_signal",{tostring(s6),"1", "exact"});
+
 action({"-gfp"},"d_paint",{"-1","0","0","0"});
-//action({},"s_get_QS",{tostring(s1),">","0.0001","W0"});
-//action({},"s_get_QS",{tostring(s2),">","3","W1"});
+
+//Señales primera compuerta
+action({},"s_get_QS",{tostring(s1),">","0.0001","W0"});
+action({},"s_get_QS",{tostring(s2),">","0.0001","W1"});
+
+//Señales segunda compuerta
+action({},"s_get_QS",{tostring(s3),">","0.0001","W2"});
+action({},"s_get_QS",{tostring(s4),">","0.0001","W3"});
+
+//Señales tercera compuerta
+action({},"s_get_QS",{tostring(s5),">","0.0001","W4"});
+action({},"s_get_QS",{tostring(s6),">","0.0001","W5"});
+
+action({},"s_get_QS",{tostring(x_s),">","0.0000000001","X"});
+//action({},"s_get_QS",{tostring(y_s),">","0.0000000001","Y"});
 action({"gfp"},"d_paint",{"1","0","0","0"});
 
 //Programs
-program p() :=
+program p() :=	
 {
 	skip();
 };
 
 program main() :=
 {
+	t = 0:
+	{
+		
+		fprint(fp,"Time, X, NX, Y, NY, W0, W1, W2, W3\n");
+		
+	}
+	true:
+	{
+		dump_multiple(fp,{"X"},{"NX"},{"Y"},{"NY"},{"W0"},{"W1"},{"W2"},{"W3"});
+		t := t + dt;
+		s_set_signal(x_s, 100, 0.0, 0.0);
+		s_set_signal(y_s, 100, 0.0, 0.0);
+	}	
     c_ecolis(100, 0, 0, 80, {"p1"}, program p());
     c_ecolis(100, 0, 0, 80, {"p2"}, program p()); 
 };
