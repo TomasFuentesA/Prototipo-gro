@@ -3,10 +3,20 @@ include gro
 set ("dt", 0.1);
 set ("population_max", 2000000);
 
+//Control
+t := 0;
+
 //CellSignals settings
 set ("signals",1.0);
-set ("signals_draw", 0.0);
+set ("signals_draw", 1.0);
+
+//Kdiff, Kdeg, emit, absorb
 grid("continuous", "gro_original", 10, 10, 8);
+s1 := s_signal([kdiff := 0.02, kdeg := 0.1]);
+s2 := s_signal([kdiff := 0.02, kdeg := 0.005]);
+
+route1 := "/Users/swamp/OneDrive/Escritorio/Prototipo-gro/Documents/";
+fp := fopen (route1 <> "XOR_circuit2_1.csv", "w");
 
 genes([		name := "OperonGfp",
 			proteins := {"gfp"}, 
@@ -30,30 +40,20 @@ genes([		name := "OperonY",
 			prot_act_times := [times := {15.0}, variabilities := {2.0}],
 			prot_deg_times := [times := {1.0}, variabilities := {0.0}]]);
 
-genes([		name := "OperonW0",
-			proteins := {"W0"}, 
-			promoter := [function := "YES",
-			transcription_factors := {"X"},
-			noise := [toOff := 0.001, toOn := 0.001, noise_time:= 100.0]],
-			prot_act_times := [times := {15.0}, variabilities := {2.0}],
-			prot_deg_times := [times := {1.0}, variabilities := {0.0}]]);
-
-genes([		name := "OperonW1",
-			proteins := {"W1"}, 
-			promoter := [function := "NOT",
-			transcription_factors := {"Y"},
-			noise := [toOff := 0.001, toOn := 0.001, noise_time:= 100.0]],
-			prot_act_times := [times := {15.0}, variabilities := {2.0}],
-			prot_deg_times := [times := {1.0}, variabilities := {0.0}]]);
-
-
-plasmids_genes ([ pXOR := {"OperonGfp", "OperonW0", "OperonW1", "OperonX", "OperonY"}]);
-
+plasmids_genes ([
+    p1 := {"OperonGfp","OperonX"},
+    p2 := {"OperonGfp","OperonY"}
+]);
 
 //Actions
-action({"gfp"},"d_paint",{"1","0","0","0"});
+action({"X"},"set_growth_rate",{"0.017"});
+action({"Y"},"set_growth_rate",{"0.017"});
+action({"X"},"s_emit_signal",{tostring(s1),"1", "exact"});
+action({"Y"},"s_emit_signal",{tostring(s2),"1", "exact"});
 action({"-gfp"},"d_paint",{"-1","0","0","0"});
-action({},"set_growth_rate",{"0.017"});
+action({},"s_get_QS",{tostring(s1),">","0.001","W0"});
+action({},"s_get_QS",{tostring(s2),">","0.001","W1"});
+action({"gfp"},"d_paint",{"1","0","0","0"});
 
 //Programs
 program p() :=
@@ -63,5 +63,17 @@ program p() :=
 
 program main() :=
 {
-    c_ecolis(100, 0, 0, 80, {"pXOR"}, program p()); 
+	t = 0:
+	{
+		
+		fprint(fp,"Time, X, Y, W0, W1\n");
+		
+	}
+	true:
+	{
+		dump_multiple(fp,{"X"},{"Y"},{"W0"},{"W1"});
+		t := t + dt;
+	}
+    c_ecolis(100, 0, 0, 80, {"p1"}, program p());
+    c_ecolis(100, 0, 0, 80, {"p2"}, program p()); 
 };

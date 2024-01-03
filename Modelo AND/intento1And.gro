@@ -25,7 +25,7 @@ genes([		name := "OperonX",
 
 genes([		name := "OperonY",
 			proteins := {"Y"}, 
-			promoter := [function := "TRUE",
+			promoter := [function := "AND",
 			noise := [toOff := 0.001, toOn := 0.001, noise_time:= 100.0]],
 			prot_act_times := [times := {15.0}, variabilities := {2.0}],
 			prot_deg_times := [times := {1.0}, variabilities := {0.0}]]);
@@ -63,5 +63,5 @@ program p() :=
 
 program main() :=
 {
-    c_ecolis(100, 0, 0, 80, {"pAnd"}, program p()); 
+    c_ecolis(200, 0, 0, 80, {"pAnd"}, program p()); 
 };

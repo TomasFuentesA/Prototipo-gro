@@ -12,7 +12,7 @@ genes([		name := "OperonGfp",
 			proteins := {"gfp"}, 
 			promoter := [function := "OR",
 			transcription_factors := {"W0", "W1"},
-			noise := [toOff := 0.001, toOn := 0.001, noise_time:= 100.0]],
+			noise := [toOff := 0.01, toOn := 0.0, noise_time:= 100.0]],
 			prot_act_times := [times := {10.0}, variabilities := {2.0}],
 			prot_deg_times := [times := {1.0}, variabilities := {0.0}]]);
 
@@ -25,23 +25,23 @@ genes([		name := "OperonX",
 
 genes([		name := "OperonY",
 			proteins := {"Y"}, 
-			promoter := [function := "FALSE",
+			promoter := [function := "TRUE",
 			noise := [toOff := 0.001, toOn := 0.001, noise_time:= 100.0]],
 			prot_act_times := [times := {15.0}, variabilities := {2.0}],
 			prot_deg_times := [times := {1.0}, variabilities := {0.0}]]);
 
 genes([		name := "OperonW0",
 			proteins := {"W0"}, 
-			promoter := [function := "OR",
-			transcription_factors := {"X", "Y"},
+			promoter := [function := "YES",
+			transcription_factors := {"X"},
 			noise := [toOff := 0.001, toOn := 0.001, noise_time:= 100.0]],
 			prot_act_times := [times := {15.0}, variabilities := {2.0}],
 			prot_deg_times := [times := {1.0}, variabilities := {0.0}]]);
 
 genes([		name := "OperonW1",
 			proteins := {"W1"}, 
-			promoter := [function := "OR",
-			transcription_factors := {"X", "Y"},
+			promoter := [function := "YES",
+			transcription_factors := {"Y"},
 			noise := [toOff := 0.001, toOn := 0.001, noise_time:= 100.0]],
 			prot_act_times := [times := {15.0}, variabilities := {2.0}],
 			prot_deg_times := [times := {1.0}, variabilities := {0.0}]]);
@@ -63,5 +63,5 @@ program p() :=
 
 program main() :=
 {
-    c_ecolis(100, 0, 0, 80, {"pOr"}, program p()); 
+    c_ecolis(200, 0, 0, 80, {"pOr"}, program p()); 
 };
